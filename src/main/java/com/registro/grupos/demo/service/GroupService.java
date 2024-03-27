@@ -41,5 +41,10 @@ public class GroupService
     {
         iGroupRepository.deleteById(id);
     }
+
+    public boolean existById ( Long id )
+    {
+        return iGroupRepository.existsById(id);
+    }
     
 }
