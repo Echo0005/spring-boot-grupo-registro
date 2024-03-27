@@ -42,4 +42,9 @@ public class UserService
         iUserRepository.deleteById(id);
     }
 
+    public boolean existById ( Long id )
+    {
+        return iUserRepository.existsById(id);
+    }
+
 }
