@@ -36,7 +36,7 @@ public class UserController
     @PostMapping("/add")
     public ResponseEntity<?> addUser( @RequestBody UserDTO userDTO )
     {
-        if ( StringUtils.isBlank( userDTO.getName ) )
+        if ( StringUtils.isBlank( userDTO.getName() ) )
             return new ResponseEntity<>( new Message("Nombre vacio"), HttpStatus.LENGTH_REQUIRED );
         if ( StringUtils.isBlank( userDTO.getAvatar() ) )
             return new ResponseEntity<>( new Message("Avatar vacio"), HttpStatus.LENGTH_REQUIRED );
@@ -58,7 +58,7 @@ public class UserController
         
         User updateUser = new User();
         updateUser.setId( userDTO.getId() );
-        updateUser.setLogo( userDTO.getName() );
+        updateUser.setAvatar( userDTO.getName() );
         updateUser.setName( userDTO.getAvatar() );
 
         userService.addUser( updateUser );
