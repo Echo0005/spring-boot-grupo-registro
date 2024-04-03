@@ -14,66 +14,66 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.registro.grupos.demo.service.GroupService;
-import com.registro.grupos.demo.dto.GroupDTO;
+import com.registro.grupos.demo.dto.GrupoDTO;
 import com.registro.grupos.demo.dto.Message;
-import com.registro.grupos.demo.model.Group;
+import com.registro.grupos.demo.model.Grupo;
+import com.registro.grupos.demo.service.GrupoService;
 
 @RestController
-@RequestMapping("/group")
-public class GroupController
+@RequestMapping("/grupo")
+public class GrupoController
 {
     @Autowired
-    private GroupService groupService;
+    private GrupoService grupoService;
 
     
     @GetMapping("/all")
-    public ResponseEntity<List<Group>> findAll()
+    public ResponseEntity<List<Grupo>> findAll()
     {
-        List<Group> listGroup = groupService.findAll();
-        return new ResponseEntity<>(listGroup, HttpStatus.FOUND);
+        List<Grupo> listGrupo = grupoService.findAll();
+        return new ResponseEntity<>(listGrupo, HttpStatus.FOUND);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addGroup( @RequestBody GroupDTO groupDTO )
+    public ResponseEntity<?> addGrupo( @RequestBody GrupoDTO grupoDTO )
     {
-        if ( StringUtils.isBlank( groupDTO.getLogo() ) )
+        if ( StringUtils.isBlank( grupoDTO.getLogo() ) )
             return new ResponseEntity<>( new Message("Logo vacio"), HttpStatus.LENGTH_REQUIRED );
-        if ( StringUtils.isBlank( groupDTO.getName() ) )
+        if ( StringUtils.isBlank( grupoDTO.getName() ) )
             return new ResponseEntity<>( new Message("Nombre vacio"), HttpStatus.LENGTH_REQUIRED );
         
-        Group newGroup = new Group();
-        newGroup.setLogo( groupDTO.getLogo() );
-        newGroup.setName( groupDTO.getName() );
+            Grupo newGroup = new Grupo();
+        newGroup.setLogo( grupoDTO.getLogo() );
+        newGroup.setName( grupoDTO.getName() );
 
-        groupService.addGroup(newGroup);
+        grupoService.addGroup(newGroup);
 
         return new ResponseEntity<>( new Message("Grupo creado"), HttpStatus.CREATED );
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateGroup( @RequestBody GroupDTO groupDTO )
+    public ResponseEntity<?> updateGroup( @RequestBody GrupoDTO grupoDTO )
     {
-        if ( groupService.existById( groupDTO.getId() ) )
+        if ( grupoService.existById( grupoDTO.getId() ) )
             return new ResponseEntity<>( new Message("Id no encontrado"), HttpStatus.NOT_MODIFIED );
         
-        Group group = new Group();
-        group.setId( groupDTO.getId() );
-        group.setLogo( groupDTO.getLogo() );
-        group.setName( groupDTO.getName() );
+        Grupo group = new Grupo();
+        group.setId( grupoDTO.getId() );
+        group.setLogo( grupoDTO.getLogo() );
+        group.setName( grupoDTO.getName() );
 
-        groupService.addGroup( group );
+        grupoService.addGroup( group );
 
         return new ResponseEntity<>( new Message( "Grupo actualizado" ), HttpStatus.OK );
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteGroup( @RequestBody GroupDTO groupDTO )
+    public ResponseEntity<?> deleteGroup( @RequestBody GrupoDTO grupoDTO )
     {
-        if ( groupService.existById( groupDTO.getId() ) )
+        if ( grupoService.existById( grupoDTO.getId() ) )
             return new ResponseEntity<>( new Message("Grupo no encontrado"), HttpStatus.NOT_FOUND );
         
-        groupService.deleteGroup( groupDTO.getId() );
+        grupoService.deleteGroup( grupoDTO.getId() );
 
         return new ResponseEntity<>( new Message("Grupo eliminado"), HttpStatus.OK );
     }
