@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Group
+public class Grupo
 {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
