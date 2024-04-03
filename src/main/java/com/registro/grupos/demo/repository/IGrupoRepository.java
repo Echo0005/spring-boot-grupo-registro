@@ -3,10 +3,10 @@ package com.registro.grupos.demo.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.registro.grupos.demo.model.Group;
+import com.registro.grupos.demo.model.Grupo;
 
 @Repository
-public interface IGroupRepository extends JpaRepository< Group, Long >
+public interface IGrupoRepository extends JpaRepository< Grupo, Long >
 {
 
 }
