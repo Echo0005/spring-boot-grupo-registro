@@ -23,8 +23,8 @@ public class UserGrupoService
         return iUserGrupoRepository.save( userGrupo );
     }
 
-    public void delete( Long id )
+    public void delete( Long userId, Long grupoId )
     {
-        iUserGrupoRepository.deleteById( id );
+        iUserGrupoRepository.deleteUserOnGrupo( userId, grupoId );
     }
 }
