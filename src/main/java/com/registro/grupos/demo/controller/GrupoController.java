@@ -1,6 +1,7 @@
 package com.registro.grupos.demo.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.registro.grupos.demo.dto.GrupoDTO;
 import com.registro.grupos.demo.dto.Message;
 import com.registro.grupos.demo.model.Grupo;
+import com.registro.grupos.demo.model.User;
 import com.registro.grupos.demo.service.GrupoService;
+import com.registro.grupos.demo.service.UserGrupoService;
+import com.registro.grupos.demo.service.UserService;
 
 @RestController
 @RequestMapping("/grupo")
@@ -25,6 +29,12 @@ public class GrupoController
 {
     @Autowired
     private GrupoService grupoService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserGrupoService userGrupoService;
 
     
     @GetMapping("/all")
@@ -76,6 +86,25 @@ public class GrupoController
         grupoService.deleteGroup( grupoDTO.getId() );
 
         return new ResponseEntity<>( new Message("Grupo eliminado"), HttpStatus.OK );
+    }
+
+    @PostMapping("/load")
+    public ResponseEntity<?> loadGrupo( @RequestBody GrupoDTO grupoDTO )
+    {
+        if ( !grupoService.existById( grupoDTO.getId() ) )
+        {
+            return new ResponseEntity<>( new Message("Grupo no encontrado"), HttpStatus.NOT_FOUND );
+        }
+        
+        GrupoDTO grupoLoad = grupoService.findOne( grupoDTO.getId() );
+
+        Set<Long> userIds = userGrupoService.getUserIdsInGrupo( grupoDTO.getId() );
+
+        Set<User> usersList = userService.searchUsersByIds(userIds);
+
+        grupoLoad = grupoService.loadGrupo(grupoDTO, usersList);
+
+        return new ResponseEntity<>( grupoLoad, HttpStatus.OK );
     }
 
 }

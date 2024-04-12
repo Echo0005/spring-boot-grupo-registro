@@ -1,6 +1,7 @@
 package com.registro.grupos.demo.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.registro.grupos.demo.dto.Message;
 import com.registro.grupos.demo.dto.UserDTO;
+import com.registro.grupos.demo.model.Grupo;
 import com.registro.grupos.demo.model.User;
+import com.registro.grupos.demo.service.GrupoService;
+import com.registro.grupos.demo.service.UserGrupoService;
 import com.registro.grupos.demo.service.UserService;
 
 @RestController
@@ -25,6 +29,12 @@ public class UserController
 {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private GrupoService grupoService;
+
+    @Autowired
+    private UserGrupoService userGrupoService;
 
     @GetMapping("/all")
     public ResponseEntity<List<User>> findAll()
@@ -75,5 +85,30 @@ public class UserController
         userService.deleteUser( userDTO.getId() );
 
         return new ResponseEntity<>( new Message("Usuario eliminado"), HttpStatus.OK );
+    }
+
+    /**
+     * Endpoint para retornar un usuario en especifico junto con una lista de los grupos donde esta anotado.
+     * 
+     * @param userDTO
+     * @return UserDTO
+     */
+    @PostMapping("/load")
+    public ResponseEntity<?> loadUser( @RequestBody UserDTO userDTO )
+    {
+        if ( userService.existById( userDTO.getId() ) )
+        {
+            return new ResponseEntity<>( new Message("Usuario no encontrado"), HttpStatus.NOT_FOUND );
+        }
+
+        UserDTO userLoad = userService.findOne( userDTO.getId() );
+
+        Set<Long> grupoIds = userGrupoService.getGrupoIdsInUser( userDTO.getId() );
+
+        Set<Grupo> gruposList = grupoService.searchGruposById(grupoIds);
+
+        userLoad = userService.loadUser(userDTO, gruposList);
+
+        return new ResponseEntity<>( userLoad, HttpStatus.OK );
     }
 }
