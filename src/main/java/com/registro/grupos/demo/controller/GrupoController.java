@@ -96,13 +96,14 @@ public class GrupoController
             return new ResponseEntity<>( new Message("Grupo no encontrado"), HttpStatus.NOT_FOUND );
         }
         
-        GrupoDTO grupoLoad = grupoService.findOne( grupoDTO.getId() );
+        GrupoDTO grupo = grupoService.findOne( grupoDTO.getId() );
 
         Set<Long> userIds = userGrupoService.getUserIdsInGrupo( grupoDTO.getId() );
 
         Set<User> usersList = userService.searchUsersByIds(userIds);
 
-        grupoLoad = grupoService.loadGrupo(grupoDTO, usersList);
+        GrupoDTO grupoLoad = new GrupoDTO();
+        grupoLoad = grupoService.loadGrupo( grupo, usersList );
 
         return new ResponseEntity<>( grupoLoad, HttpStatus.OK );
     }

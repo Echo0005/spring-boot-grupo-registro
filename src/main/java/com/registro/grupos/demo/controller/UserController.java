@@ -96,18 +96,22 @@ public class UserController
     @PostMapping("/load")
     public ResponseEntity<?> loadUser( @RequestBody UserDTO userDTO )
     {
-        if ( userService.existById( userDTO.getId() ) )
+        if ( !userService.existById( userDTO.getId() ) )
         {
             return new ResponseEntity<>( new Message("Usuario no encontrado"), HttpStatus.NOT_FOUND );
         }
 
-        UserDTO userLoad = userService.findOne( userDTO.getId() );
+        UserDTO user = userService.findOne( userDTO.getId() );
 
         Set<Long> grupoIds = userGrupoService.getGrupoIdsInUser( userDTO.getId() );
 
         Set<Grupo> gruposList = grupoService.searchGruposById(grupoIds);
 
-        userLoad = userService.loadUser(userDTO, gruposList);
+        UserDTO userLoad = new UserDTO();
+        userLoad = userService.loadUser(user, gruposList);
+
+        System.out.println("");
+        System.out.println( "Controller, userLoad tras loadUser: " + userLoad );
 
         return new ResponseEntity<>( userLoad, HttpStatus.OK );
     }
